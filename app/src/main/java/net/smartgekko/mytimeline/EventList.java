@@ -7,8 +7,10 @@ public class EventList {
         public EventList(){
             addEvent(new SimpleEvent(20,140));
             addEvent(new SimpleEvent(200,1000));
+            addEvent(new SimpleEvent(300,660));
             addEvent(new SimpleEvent(500,740));
             addEvent(new SimpleEvent(600,1440));
+            addEvent(new SimpleEvent(950,1100));
             addEvent(new SimpleEvent(1050,1440));
         }
 

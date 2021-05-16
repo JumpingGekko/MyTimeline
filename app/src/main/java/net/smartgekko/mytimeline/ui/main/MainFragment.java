@@ -55,6 +55,7 @@ public class MainFragment extends Fragment implements View.OnTouchListener {
                              @Nullable Bundle savedInstanceState) {
 
         View view= inflater.inflate(R.layout.main_fragment, container, false);
+
         mainLayout=view.findViewById(R.id.main);
         eventRootLayout=view.findViewById(R.id.eventsRootLayout);
         rootScroll=(LockableNestedScrollView)view.findViewById(R.id.rootScroll);
@@ -73,7 +74,6 @@ public class MainFragment extends Fragment implements View.OnTouchListener {
             int duration=item.getDuration();
             int endTimePoint=startTimePoint+duration;
 
-
             LinearLayout ll = new LinearLayout( eventRootLayout.getContext());
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.WRAP_CONTENT , LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -83,7 +83,7 @@ public class MainFragment extends Fragment implements View.OnTouchListener {
             layoutParams.height= duration;
             ll.setPadding(1,0,1,0);
             GradientDrawable border = new GradientDrawable();
-            border.setColor(0xFFFFFFFF); //white background
+            border.setColor(0xFFFFFFFF);
             border.setStroke(1, 0xFF000000);
             ll.setBackground(border);
             ll.setLayoutParams(layoutParams);
@@ -113,44 +113,44 @@ public class MainFragment extends Fragment implements View.OnTouchListener {
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) ll.getLayoutParams();
 
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: // нажатие
+            case MotionEvent.ACTION_DOWN:
                 rootScroll.setScrollingEnabled(false);
 
                 GradientDrawable border = new GradientDrawable();
-                border.setColor(0xFFFFFF00); //white background
+                border.setColor(0xFFFFFF00);
                 border.setStroke(1, 0xFF000000);
                 ll.setBackground(border);
                 yDelta = y - layoutParams.topMargin;
                 break;
 
-            case MotionEvent.ACTION_MOVE: // движение
+            case MotionEvent.ACTION_MOVE:
                 int mainHeight= rootScroll.getHeight();
                 int screenHeight=getScreenHeight();
-                int eventLayoutHeght=eventRootLayout.getHeight();
+                int eventLayoutHeight=eventRootLayout.getHeight();
+                int eventHeight=ll.getHeight();
                 int eventTopMargin=layoutParams.topMargin;
-                int fullScreenHeight=getScreenHeight()+(eventRootLayout.getHeight()-getScreenHeight());
-                int topUpButtonLimit=screenHeight-mainHeight+eventTopMargin+200;
-                int test2=eventRootLayout.getHeight();
+                int fullScreenHeight=screenHeight+(eventLayoutHeight-screenHeight);
+                int topButtonLimit=screenHeight-mainHeight+eventTopMargin+((int)eventHeight/2);
 
-                if(y - yDelta + view.getHeight() <= eventRootLayout.getHeight()&&y - yDelta >= 0&&y<topUpButtonLimit){
+
+                if(y - yDelta + view.getHeight() <= eventRootLayout.getHeight()&&y - yDelta >= 0){
                     layoutParams.topMargin = y - yDelta;
                     ll.setLayoutParams(layoutParams);
-
                     ll.removeAllViews();
                     TextView startTime =new TextView(ll.getContext());
-                    startTime.setText(String.valueOf(eventTopMargin)+"-"+String.valueOf(eventTopMargin+eventLayoutHeght));
+                    startTime.setText(yToTime(eventTopMargin)+"-"+yToTime(eventTopMargin+eventHeight));
                     ll.addView(startTime);
                 }
                 break;
-            case MotionEvent.ACTION_UP: // отпускание
+            case MotionEvent.ACTION_UP:
                 border = new GradientDrawable();
-                border.setColor(0xFFFFFFFF); //white background
+                border.setColor(0xFFFFFFFF);
                 border.setStroke(1, 0xFF000000);
                 ll.setBackground(border);
                 rootScroll.setScrollingEnabled(true);
                 break;
-            case MotionEvent.ACTION_CANCEL:
 
+            case MotionEvent.ACTION_CANCEL:
                 break;
         }
         eventRootLayout.invalidate();
@@ -170,5 +170,15 @@ public class MainFragment extends Fragment implements View.OnTouchListener {
 
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+    public static String yToTime(int y) {
+        String result="";
+        int  hours=0;
+        int minutes=0;
+        hours=y/60;
+        minutes=y-hours*60;
+        result=" "+hours+":"+minutes;
+        return result;
     }
 }
